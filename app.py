@@ -62,6 +62,51 @@ async def telegram_webhook(request: Request):
         send_message(chat_id, reply_text)
         return {"ok": True}
 
+
+    # =============================
+    # 💰 AANA COMMAND
+    # =============================
+    if text.startswith("/aana"):
+        from sheets import calculate_balances
+        balances = calculate_balances()
+
+        reply_text = "💰 Paise jo mujhe aane hain:\n\n"
+        found = False
+
+        for person, balance in balances.items():
+            if balance > 0:
+                found = True
+                reply_text += f"{person} → ₹{balance}\n"
+
+        if not found:
+            reply_text += "Kisi se paise nahi aane."
+
+        send_message(chat_id, reply_text)
+        return {"ok": True}
+    
+
+    # =============================
+    # 💸 DENA COMMAND
+    # =============================
+    if text.startswith("/dena"):
+        from sheets import calculate_balances
+        balances = calculate_balances()
+
+        reply_text = "💸 Paise jo dene hain:\n\n"
+        found = False
+
+        for person, balance in balances.items():
+            if balance < 0:
+                found = True
+                reply_text += f"{person} → ₹{abs(balance)}\n"
+
+        if not found:
+            reply_text += "Kisi ko paise nahi dene."
+
+        send_message(chat_id, reply_text)
+        return {"ok": True}
+
+
     # =============================
     # 📜 LEDGER COMMAND
     # =============================
